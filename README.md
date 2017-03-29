@@ -12,7 +12,7 @@
 ## Install
 
 ```
-$ npm install artificialspoken
+$ npm install aslk
 ```
 
 ## BNF
@@ -29,7 +29,7 @@ P = a* (N+|V+)?
 File: aslTest.js
 
 ```
-var spoken = require('../lib/artificialspoken')
+var spoken = require('../lib/aslk')
 
 spoken.analysis('小明 和 小英:N 一起吃蘋果。\n')
 spoken.analysis('小明有5個蘋果，給了小華3個蘋果，請問他還剩幾個蘋果？\n')
@@ -45,7 +45,7 @@ spoken.analysis('祭拜同一位神明， 至高無上:N=supreme 的天神《 �
 ## Run 
 
 ```
-$ node mtTest.js
+$ node ex1.js
 ["小明","和","小英:N","一起","吃","蘋果","。","↓"]
  小明:N/ 和:V/ 小英:N:N/ 一起:a 吃:V/ 蘋果:N/ 。:. ↓:.
 ["_xiǎo_míng","and","_xiǎo_yīng","together","eat","apple","。","↓"]

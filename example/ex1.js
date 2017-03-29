@@ -1,4 +1,4 @@
-var spoken = require('../lib/artificialspoken')
+var spoken = require('../kernel/aslk')
 
 spoken.analysis('小明 和 小英:N 一起吃蘋果。\n')
 spoken.analysis('小明有5個蘋果，給了小華3個蘋果，請問他還剩幾個蘋果？\n')

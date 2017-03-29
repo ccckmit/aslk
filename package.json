@@ -1,10 +1,10 @@
 {
-  "name": "artificialspoken",
-  "version": "0.0.2",
-  "description": "Artifical Spoken Language (人造語)",
-  "main": "lib/artificialspoken.js",
+  "name": "aslk",
+  "version": "0.0.1",
+  "description": "Artifical Spoken Language - Kernel (人造語核心)",
+  "main": "lib/aslk.js",
   "dependencies": {
-    "chinese_convert": "^1.0.8",
+    "chinese-conv": "^1.0.1",
     "mdo": "^1.0.4",
     "pinyin.js": "^2.0.0"
   },
@@ -14,7 +14,6 @@
     "koa-router": "^7.0.1",
     "koa-send": "^3.3.0",
     "koa-static": "^3.0.0",
-    "chinese-conv": "^1.0.1",
     "mocha": "^3.1.0"
   },
   "scripts": {
@@ -29,14 +28,14 @@
     "translation",
     "langugage"
   ],
-  "homepage": "https://github.com/ArtificialSpokenFoundation/artificialspoken.git",
+  "homepage": "https://github.com/ccckmit/aslk.git",
   "repository": {
     "type": "git",
-    "url": "http://github.com/ArtificialSpokenFoundation/artificialspoken.git"
+    "url": "http://github.com/ccckmit/aslk.git"
   },
   "author": {
     "name": "Chung-Chen Chen",
-    "email": "artificialspoken@gmail.com"
+    "email": "ccckmit@gmail.com"
   },
   "license": "SEE LICENSE IN LICENSE"
 }
