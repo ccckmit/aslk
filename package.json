@@ -4,7 +4,7 @@
   "description": "Artifical Spoken Language - Kernel (人造語核心)",
   "main": "kernel/aslk.js",
   "dependencies": {
-    "chinese-conv": "^1.0.1",
+    "chinese_convert": "^1.0.8",
     "mdo": "^1.0.4",
     "pinyin.js": "^2.0.0"
   },
