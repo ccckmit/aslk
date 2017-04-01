@@ -116,7 +116,9 @@ a|3|3||
 a|黑|black||
 a|大|big||
 a|的|||
--|捕鱼|fishing||
+V|捕|hunt
+N|魚|fish|
+V|捕魚|fishing
 V|是|is||
 V|有|has||
 V|能|can||
@@ -179,3 +181,4 @@ N|德語|Germany
 N|等等|and_so
 V|起|get
 V|較多|more
+N|神明|god
