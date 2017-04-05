@@ -4,15 +4,15 @@ var Router = require('koa-router')
 var send = require('koa-send')
 var bodyParser = require('koa-bodyparser')
 var path = require('path')
-var spoken = require('../lib/artificialspoken')
+var aslk = require('../kernel/aslk')
 var app = new Koa()
 var router = new Router()
 
 app.use(bodyParser())
 
-function asl (text) {
-  var p = spoken.analyze(text)
-  p.tree = spoken.formatParse(p)
+function asl (text, s2t) {
+  var p = aslk.analyze(text, s2t)
+  p.tree = aslk.formatParse(p)
   return p
 }
 

@@ -10,21 +10,11 @@ var kb = {
   userFile: path.join(__dirname, '../dictionary/kb.user.mdo')
 }
 
-kb.toCn = function (dict) {
+kb.normalize = function (dict) {
   for (var i in dict) {
     var word = dict[i]
-    if (typeof word.cn !== 'undefined') {
-      word.cn = cc.tw2cn(word.cn)
-    }
-  }
-}
-
-kb.getByCn = function (cn) {
-  var word = kb.cnMap[cn]
-  if (word != null && word.tag !== '') {
-    return word
-  } else {
-    return undefined
+    if (word.cn != null) word.cn = cc.tw2cn(word.cn)
+    if (word.en != null) word.en = word.en.toLowerCase()      
   }
 }
 
@@ -46,11 +36,9 @@ kb.saveWord = function (w) {
 }
 
 kb.setByCn = function (w) {
-//  console.log('saveByCn(%j)', w)
   var w0 = kb.get(w.cn)
-//  console.log(' w0=%j', w0)
   if (w0 == null) w0 = {}
-  if (w0.tag === w.tag && w0.en === w.en) {
+  if (w0.tag === w.tag) { /* && w0.en === w.en */
     return
   }
   if (w.en == null) w.en = w0.en
@@ -58,9 +46,32 @@ kb.setByCn = function (w) {
   kb.saveWord(w)
 }
 
-kb.get = function (w) {
+kb.getByEn = function (w) {
+  var en = w.toLowerCase()
+  return kb.enMap[en]
+}
+
+kb.getByCn = function (w) {
   var cn = cc.tw2cn(w)
-  var word = kb.getByCn(cn)
+  var word = kb.cnMap[cn]
+  if (word == null) return
+  return word
+/*
+  if (word != null && word.tag !== '') {
+    return word
+  } else {
+    return undefined
+  }
+*/
+}
+
+kb.get = function (w) {
+  var word
+  if (/^\w+$/i.test(w)) {
+    word = kb.getByEn(w)
+  } else {
+    word = kb.getByCn(w)
+  }
   return word
 }
 
@@ -71,10 +82,11 @@ kb.load = function () {
   var editArray = mdo.parseTable(editMdo)
   var userMdo = fs.readFileSync(kb.userFile).toString()
   var userArray = mdo.parseTable(userMdo)
-  kb.toCn(editArray)
-  kb.toCn(userArray)
   var dict = editArray.concat(userArray).concat(kbArray)
+  kb.normalize(dict)
   kb.cnMap = mdo.index(dict, 'cn')
+  kb.enMap = mdo.index(dict, 'en')
+//  console.log('kb.enMap=%j', kb.enMap)
 }
 
 kb.load()

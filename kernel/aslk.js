@@ -8,12 +8,6 @@ var kb = require('./kb')
 
 var wi, words, errors, tags, cuts
 
-function isTag (tag) {
-  var word = words[wi]
-  if (typeof word === 'undefined') return false
-  return (tag === word.tag)
-}
-
 function skipNull () {
   for (;wi < words.length && words[wi].tag === ''; wi++) {
     tags[wi] = ''
@@ -22,16 +16,25 @@ function skipNull () {
   }
 }
 
+function isTag (tag) {
+  skipNull()
+  var word = words[wi]
+//  if (word == null) return false
+  return (tag === word.tag)
+}
+
+var lastTag
+
 function next (tag) {
   skipNull()
   var w = words[wi]
-//  console.log('w=%j', w)
+//  console.log('next:wi=%d w=%j tag=%s', wi, w, tag)
   tags.push(w.tag)
   cuts[wi] = ''
-  if (isTag(tag)) {
+  if (tag === w.tag) { // (isTag(tag)) {
+    lastTag = tag
     errors[wi] = ''
     wi++
-    skipNull()
     return w
   } else {
     errors[wi] = w.tag + '≠' + tag
@@ -54,16 +57,20 @@ function S () {
 // P = a* (N+|V+)?
 function P () {
   while (isTag('a')) next('a')
+  if (lastTag === 'a') cuts[wi - 1] = 'a'
+  skipNull()
   if (!isTag('.')) {
     var t = words[wi].tag
-    while (isTag(t)) next(t)
-    cuts[wi - 1] = '/'
+//    console.log('before NV:wi=%d t=%s', wi, t)
+    do { next(t) } while (isTag(t))
+    cuts[wi - 1] = t
+//    console.log('after  NV:wi=%d t=%s', wi, t)
   }
 }
 
 var exps = {
   script: /^(<script.*?>.*?<\/script>)/i, // HTML script 不翻譯
-  head: /^(<head>.*?<\/head>)/i, // HTML head 不翻譯
+  style: /^(<style.*?>.*?<\/style>)/i, // HTML style 不翻譯
   comment: /^(<!--.*?-->)/i,     // HTML 註解不翻譯
   markup: /^(<\/?.*?>)/i,        // <tag> , </tag> , markdown: <http://.....>
   url: /^(((http)|(https)|(ftp)):\/\/[\w./]+)/i, // 超連結
@@ -97,22 +104,25 @@ function clex (text) {
             kb.setByCn(word)
             break
           case 'et' : // ex: John:N
-            var tag = (m[3] == null) ? 'N' : m[3] // 不認識的英文詞也視為名詞
-            word = {en: m[2], tag: tag}
-            break
-          case 'markup': case 'mdLinkHead': case 'mdLinkTail':
-          case 'spaces': case 'skips': case 'comment':
-            word = { tag: '' } // 空白類型，忽略。
-            console.log('m[1]=%s', m[1])
-            break
-          case 'tex': case 'code': case 'head': case 'script': case 'url':
-            word = { tag: '.' }
+            word = kb.get(m[2])
+            if (word == null) {
+              var tag = (m[3] == null) ? 'N' : m[3] // 不認識的英文詞也視為名詞
+              word = {en: m[2], tag: tag}
+            }
             break
           case 'c4': case 'c3': case 'c2': case 'c1': // 中文詞
             word = kb.get(m[1])
             if (word == null && t === 'c1') {
               word = {cn: m[1], tag: 'N'} // 不認識的中文字，都視為名詞
             }
+            break
+          case 'markup': case 'mdLinkHead': case 'mdLinkTail':
+          case 'spaces': case 'skips': case 'comment':
+            word = { tag: '' } // 空白類型，忽略。
+//            console.log('m[1]=%s', m[1])
+            break
+          case 'tex': case 'code': case 'style': case 'script': case 'url':
+            word = { tag: '.' }
             break
           case 'dots': // 符號串
             word = {tag: '.'}
@@ -139,43 +149,56 @@ function parse (lex) {
   return {tokens: lex.tokens, words: words, errors: errors, tags: tags, cuts: cuts}
 }
 
-function english (token, word) {
+function c2e (token, word) {
   if (word.en != null) return word.en.replace(/[\s_]/g, '-')
   if (word.tag == null || word.tag === '.' || word.tag === '') return token
   return '-' + pinyin(word.cn).toString().replace(',', '_')
 }
 
-function mt (tokens, words) {
-  var eWords = []
-  for (var i in words) {
-    eWords.push(english(tokens[i], words[i]))
-  }
-  return eWords
+function e2c (token, word) {
+  if (word.cn != null) return word.cn
+  if (word.tag == null || word.tag === '.' || word.tag === '') return token
+  return word.en
 }
 
-function analyze (text) {
+function mt (tokens, words, s2t) {
+  var toWords = []
+  for (var i in words) {
+    if (s2t === 'c2e') {
+      toWords.push(c2e(tokens[i], words[i]))
+    } else if (s2t === 'e2c') {
+      toWords.push(e2c(tokens[i], words[i]))
+    } else {
+      throw Error('mt:s2t=%s , unsupported mode !', s2t)
+    }
+  }
+  return toWords
+}
+
+function analyze (text, s2t) {
   var lex = clex(text)
   console.log('詞彙：%j', lex.words)
   var p = parse(lex)
 //  console.log('詞性：%j', p.tags)
 //  console.log('錯誤：%j', p.errors)
-  p.en = mt(lex.tokens, lex.words)
+  p.t = mt(lex.tokens, lex.words, s2t)
   return p
 }
 
-function report (p) {
+function report (p, s2t) {
   console.log('%j', p.tokens)
 //  console.log('詞性：%j', p.tags)
- console.log('%s', formatParse(p).join('\n').trim())
+  console.log('%s', formatParse(p).join('\n').trim())
 //  console.log('format:%j', formatParse(p))
 //  console.log('錯誤：%j', p.errors)
-  console.log('%j', p.en)
-  console.log('%s', p.en.join(' '))
+  console.log('%j', p.t)
+  console.log('%s', p.t.join(' '))
+  console.log('cuts=%j', p.cuts)
   console.log('=========================')
 }
 
-function analysis (text) {
-  var p = analyze(text)
+function analysis (text, s2t) {
+  var p = analyze(text, s2t)
   report(p)
 }
 
@@ -196,7 +219,6 @@ module.exports = {
   parse: parse,
   clex: clex,
   mt: mt,
-  english: english,
 //  formatParse: formatParse,
   report: report,
   analyze: analyze,
