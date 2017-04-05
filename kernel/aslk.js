@@ -85,7 +85,8 @@ var exps = {
   c3: /^([\u4E00-\u9FFF]{3})/,   // 三字詞
   c2: /^([\u4E00-\u9FFF]{2})/,   // 二字詞
   c1: /^([\u4E00-\u9FFF]{1})/,   // 一字詞
-  dots: /^([^\w\u4E00-\u9FFF]+)/i // 一連串標點 (非中英文)
+  newline: /^([↓])/, // 換行
+  dots: /^([^\w\u4E00-\u9FFF↓]+)/i // 一連串標點 (非中英文)
 }
 
 function clex (text) {
@@ -124,7 +125,8 @@ function clex (text) {
           case 'tex': case 'code': case 'style': case 'script': case 'url':
             word = { tag: '.' }
             break
-          case 'dots': // 符號串
+          case 'newline': case 'dots': // 符號串
+            console.log('text[%d]=%s m[1]=%s', i, text[i], m[1])
             word = {tag: '.'}
             break
         }
