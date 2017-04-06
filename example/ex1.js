@@ -6,7 +6,6 @@ spoken.analysis('黑黑的天，大大的風，爸爸去捕魚，為甚麼 還 �
 spoken.analysis('John:N 與 Mary=瑪莉:N 是 一 對 戀人。\n', 'c2e')
 spoken.analysis('風與日。風日爭，旅人至，脫者勝，風狂吹，人緊衣，風敗，日暖照，人脫衣，日勝。\n', 'c2e')
 spoken.analysis('蘋果和牛奶很好吃。\n蘋果牛奶很好喝。\n很好喝的蘋果牛奶。', 'c2e')
-/*
 spoken.analysis('好大的蘋果。', 'c2e')
 spoken.analysis('John 和 Mary 一起吃蘋果。\n', 'c2e')
 spoken.analysis('祭拜同一位神明， supreme=至高無上:N 的天神《 法拉:N 》。', 'c2e')
@@ -16,7 +15,6 @@ spoken.analysis('測試 \n```js \n// 程式碼\n```\n 還有 $$數學式$$ 是�
 spoken.analysis('測試 <style>一起吃蘋果</style> 還有  <script> // 人造交談語言 </script> 。', 'c2e')
 spoken.analysis('測試 <!-- 註解 --> 還有  http://mdbookspace.com/view/ccc/README.md 超連結 。', 'c2e')
 spoken.analysis('Mary is my friend.', 'e2c')
-*/
 // spoken.analysis('蘋果 了 了 香蕉 吃 。 ')
 // spoken.analysis('蘋果 和 香蕉 吃 。')
 // spoken.analysis('吃 蘋果 香蕉 。 吃 蘋果 和 香蕉 。')

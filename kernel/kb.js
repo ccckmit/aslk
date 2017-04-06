@@ -38,7 +38,7 @@ kb.saveWord = function (w) {
 kb.setByCn = function (w) {
   var w0 = kb.get(w.cn)
   if (w0 == null) w0 = {}
-  if (w0.tag === w.tag) { /* && w0.en === w.en */
+  if (w0.tag === w.tag && w0.en === w.en) {
     return
   }
   if (w.en == null) w.en = w0.en

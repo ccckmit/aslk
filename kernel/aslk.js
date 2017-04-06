@@ -91,8 +91,8 @@ var exps = {
 
 function clex (text) {
   text = text.replace(/\n/g, '↓')
-  var lwords = []
-  var tokens = []
+  var w = []
+  var s = []
   for (var i = 0; i < text.length;) {
     var m = null
     var word = null
@@ -113,6 +113,7 @@ function clex (text) {
             break
           case 'c4': case 'c3': case 'c2': case 'c1': // 中文詞
             word = kb.get(m[1])
+            if (word != null && word.en === '_') word = null // _ 代表該字不是一個詞(反定義)
             if (word == null && t === 'c1') {
               word = {cn: m[1], tag: 'N'} // 不認識的中文字，都視為名詞
             }
@@ -133,11 +134,11 @@ function clex (text) {
       }
       if (word != null) break
     }
-    lwords.push(word)
-    tokens.push(m[1])
+    w.push(word)
+    s.push(m[1])
     i = i + m[1].length
   }
-  return {tokens: tokens, words: lwords}
+  return {s: s, words: w}
 }
 
 function parse (lex) {
@@ -148,28 +149,28 @@ function parse (lex) {
   for (wi = 0; wi < words.length;) {
     S()
   }
-  return {tokens: lex.tokens, words: words, errors: errors, tags: tags, cuts: cuts}
+  return {s: lex.s, words: words, errors: errors, tags: tags, cuts: cuts}
 }
 
-function c2e (token, word) {
-  if (word.en != null) return word.en.replace(/[\s_]/g, '-')
-  if (word.tag == null || word.tag === '.' || word.tag === '') return token
+function c2e (source, word) {
+  if (word.en != null && word.en !== '') return word.en.replace(/[\s_]/g, '-')
+  if (word.tag == null || word.tag === '.' || word.tag === '') return source
   return '-' + pinyin(word.cn).toString().replace(',', '_')
 }
 
-function e2c (token, word) {
+function e2c (source, word) {
   if (word.cn != null) return word.cn
-  if (word.tag == null || word.tag === '.' || word.tag === '') return token
+  if (word.tag == null || word.tag === '.' || word.tag === '') return source
   return word.en
 }
 
-function mt (tokens, words, s2t) {
+function mt (s, words, s2t) {
   var toWords = []
   for (var i in words) {
     if (s2t === 'c2e') {
-      toWords.push(c2e(tokens[i], words[i]))
+      toWords.push(c2e(s[i], words[i]))
     } else if (s2t === 'e2c') {
-      toWords.push(e2c(tokens[i], words[i]))
+      toWords.push(e2c(s[i], words[i]))
     } else {
       throw Error('mt:s2t=%s , unsupported mode !', s2t)
     }
@@ -183,12 +184,12 @@ function analyze (text, s2t) {
   var p = parse(lex)
 //  console.log('詞性：%j', p.tags)
 //  console.log('錯誤：%j', p.errors)
-  p.t = mt(lex.tokens, lex.words, s2t)
+  p.t = mt(lex.s, lex.words, s2t)
   return p
 }
 
 function report (p, s2t) {
-  console.log('%j', p.tokens)
+  console.log('%j', p.s)
 //  console.log('詞性：%j', p.tags)
   console.log('%s', formatParse(p).join('\n').trim())
 //  console.log('format:%j', formatParse(p))
@@ -209,9 +210,8 @@ function formatParse (p) {
   for (var i = 0; i < p.words.length; i++) {
     if (p.tags[i] !== '') {
       var json = JSON.stringify(p.words[i])
-      outs.push('token=' + p.tokens[i] + ' tag=' + p.tags[i] + ' cut=' + p.cuts[i] + ' word=' + json)
+      outs.push('s=' + p.s[i] + ' tag=' + p.tags[i] + ' cut=' + p.cuts[i] + ' word=' + json)
     }
-//      outs.push('token=%s tag=%s cut=%s'p.tokens[i] + ':' + p.tags[i] + p.cuts[i])
   }
   return outs
 }
@@ -221,7 +221,6 @@ module.exports = {
   parse: parse,
   clex: clex,
   mt: mt,
-//  formatParse: formatParse,
   report: report,
   analyze: analyze,
   analysis: analysis

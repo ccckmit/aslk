@@ -12,7 +12,7 @@ app.use(bodyParser())
 
 function asl (text, s2t) {
   var p = aslk.analyze(text, s2t)
-  p.tree = aslk.formatParse(p)
+//  p.tree = aslk.formatParse(p)
   return p
 }
 
@@ -26,10 +26,11 @@ app.use(async function (ctx, next) {
       await send(ctx, ctx.path, { root: path.join(__dirname, '../web') })
     }
   } else if (method === 'POST') {
-    if (ctx.path === '/asl') {
-      body = ctx.request.body
-//      console.log('==========asl:source================\n' + body.source)
-      ctx.body = JSON.stringify(asl(body.source), null, 2)
+    body = ctx.request.body
+    if (ctx.path.startsWith('/asl/e2c')) {
+      ctx.body = JSON.stringify(asl(body.source, 'e2c'), null, 2)
+    } else {
+      ctx.body = JSON.stringify(asl(body.source, 'c2e'), null, 2)
     }
   }
 })
