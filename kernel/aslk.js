@@ -89,6 +89,33 @@ var exps = {
   dots: /^([^\w\u4E00-\u9FFF↓]+)/i // 一連串標點 (非中英文)
 }
 
+var suffixList = [
+  '=', 'd==%cd', 's==%cs', 'es==%ces', 'ed==%ced', 'ly==%cly', 'al==%cal',
+  'er=e=%cer', 'er==%cer', '\'s==%c\'s', 'ies=y=%cies',
+  'ion==%cion', 'ion=e=%cion',
+  'ing==%cing', 'ing=e=%ceing', 'est=e=%cest', 'able==%cable' ]
+
+var eMt = function (w) {
+  w = w.toLowerCase()
+  for (var i = 0; i < suffixList.length; i++) {
+    var parts = suffixList[i].split('=')
+    var tail = parts[0]
+    var newTail = parts[1]
+//    var pattern = parts[2]
+    if (w.endsWith(tail)) {
+      var w0 = w.substr(0, w.length - tail.length) + newTail
+      var wt = kb.get(w0)
+      if (wt != null) {
+//        if (pattern != null) {
+//          wt = pattern.replace('%c', wt)
+//        }
+        return wt
+      }
+    }
+  }
+//  return w
+}
+
 function clex (text) {
   text = text.replace(/\n/g, '↓')
   var w = []
@@ -102,10 +129,11 @@ function clex (text) {
         switch (t) {
           case 'cet': // ex: Mary=瑪莉:N
             word = {cn: m[5], en: m[3], tag: m[6]}
-            kb.setByCn(word)
+            kb.set(word)
             break
           case 'et' : // ex: John:N
-            word = kb.get(m[2])
+            word = eMt(m[2])
+//            word = kb.get(m[2])
             if (word == null) {
               var tag = (m[3] == null) ? 'N' : m[3] // 不認識的英文詞也視為名詞
               word = {en: m[2], tag: tag}
@@ -127,7 +155,7 @@ function clex (text) {
             word = { tag: '.' }
             break
           case 'newline': case 'dots': // 符號串
-            console.log('text[%d]=%s m[1]=%s', i, text[i], m[1])
+//            console.log('text[%d]=%s m[1]=%s', i, text[i], m[1])
             word = {tag: '.'}
             break
         }
@@ -159,9 +187,14 @@ function c2e (source, word) {
 }
 
 function e2c (source, word) {
-  if (word.cn != null) return word.cn
+//  console.log('e2c: e=%s c=%s', word.en, word.cn)
+  if (word.cn != null && word.cn !== '') return word.cn
+  return source
+/*
+  if (word.cn === '') return word.en
   if (word.tag == null || word.tag === '.' || word.tag === '') return source
   return word.en
+*/
 }
 
 function mt (s, words, s2t) {
