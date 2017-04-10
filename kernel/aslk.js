@@ -1,9 +1,8 @@
-/* ASLT : Artifical Spoken Language Toolket (人造交談語言工具 - 翻譯與剖析)
+/* ASLK : Artifical Spoken Language Kernel (人造交談語言核心 - 翻譯與剖析)
 S = P* .+                // 句子 = 短語* 符號+
 P = a* (N+|V+)?          // 短語 = 修飾* (名詞+|動詞+)
 */
 var pinyin = require('pinyin.js')
-// var pinyin = require('pinyinlite')
 var kb = require('./kb')
 
 var wi, words, errors, tags, cuts
@@ -19,7 +18,6 @@ function skipNull () {
 function isTag (tag) {
   skipNull()
   var word = words[wi]
-//  if (word == null) return false
   return (tag === word.tag)
 }
 
@@ -28,10 +26,9 @@ var lastTag
 function next (tag) {
   skipNull()
   var w = words[wi]
-//  console.log('next:wi=%d w=%j tag=%s', wi, w, tag)
   tags.push(w.tag)
   cuts[wi] = ''
-  if (tag === w.tag) { // (isTag(tag)) {
+  if (tag === w.tag) {
     lastTag = tag
     errors[wi] = ''
     wi++
@@ -61,10 +58,8 @@ function P () {
   skipNull()
   if (!isTag('.')) {
     var t = words[wi].tag
-//    console.log('before NV:wi=%d t=%s', wi, t)
     do { next(t) } while (isTag(t))
     cuts[wi - 1] = t
-//    console.log('after  NV:wi=%d t=%s', wi, t)
   }
 }
 
@@ -149,13 +144,11 @@ function clex (text) {
           case 'markup': case 'mdLinkHead': case 'mdLinkTail':
           case 'spaces': case 'skips': case 'comment':
             word = { tag: '' } // 空白類型，忽略。
-//            console.log('m[1]=%s', m[1])
             break
           case 'tex': case 'code': case 'style': case 'script': case 'url':
             word = { tag: '.' }
             break
           case 'newline': case 'dots': // 符號串
-//            console.log('text[%d]=%s m[1]=%s', i, text[i], m[1])
             word = {tag: '.'}
             break
         }
@@ -187,7 +180,6 @@ function c2e (source, word) {
 }
 
 function e2c (source, word) {
-//  console.log('e2c: e=%s c=%s', word.en, word.cn)
   if (word.cn != null && word.cn !== '') return word.cn
   return source
 /*
@@ -213,10 +205,7 @@ function mt (s, words, s2t) {
 
 function analyze (text, s2t) {
   var lex = clex(text)
-  console.log('詞彙：%j', lex.words)
   var p = parse(lex)
-//  console.log('詞性：%j', p.tags)
-//  console.log('錯誤：%j', p.errors)
   p.t = mt(lex.s, lex.words, s2t)
   return p
 }
