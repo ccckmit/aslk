@@ -17,7 +17,7 @@ aslk.analysis('測試 <!-- 註解 --> 還有  http://mdbookspace.com/view/ccc/RE
 aslk.analysis('Mary is my friend.', 'e2c')
 aslk.analysis('Today is the oral_defense of the ESP department in X university.', 'e2c')
 aslk.analysis('In the beginning, Magneto comes in and cups of committee members fly to salute.', 'e2c')
-
+aslk.analysis('寫程式 ( [Node.js](https://nodejs.org/) + [JavaScript](js1.md) 。', 'c2e')
 // aslk.analysis('蘋果 了 了 香蕉 吃 。 ')
 // aslk.analysis('蘋果 和 香蕉 吃 。')
 // aslk.analysis('吃 蘋果 香蕉 。 吃 蘋果 和 香蕉 。')

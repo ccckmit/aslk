@@ -128,9 +128,10 @@ function clex (text) {
             break
           case 'et' : // ex: John:N
             word = eMt(m[2])
+//            console.log('et:word=%j m=%j', word, m)
 //            word = kb.get(m[2])
             if (word == null) {
-              var tag = (m[3] == null) ? 'N' : m[3] // 不認識的英文詞也視為名詞
+              var tag = (m[4] == null) ? 'N' : m[4] // 不認識的英文詞也視為名詞
               word = {en: m[2], tag: tag}
             }
             break
