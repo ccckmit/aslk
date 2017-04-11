@@ -99,7 +99,7 @@ kb.load = function () {
   var editArray = mdo.parseTable(editMdo)
   var userMdo = fs.readFileSync(kb.userFile).toString()
   var userArray = mdo.parseTable(userMdo)
-  var dict = editArray.concat(userArray).concat(e2cArray).concat(c2eArray)
+  var dict = userArray.concat(editArray).concat(e2cArray).concat(c2eArray)
   kb.normalize(dict)
   kb.cnMap = mdo.index(dict, 'cn')
   kb.enMap = mdo.index(dict, 'en')
