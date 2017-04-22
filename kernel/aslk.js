@@ -235,7 +235,7 @@ function rubyMt (text, s2t) {
     if (p.s[i] === '↓') {
       toTags.push('</ruby><br/><ruby>')
     } else {
-      toTags.push(/*'&nbsp;' + */ p.s[i] +
+      toTags.push('&nbsp;' + p.s[i] +
         '<sub class="cut">' + p.cuts[i] + '</sub>' +
         '<rp>(</rp><rt>' /*+'&nbsp;'*/ + p.t[i] + '</rt><rp>)</rp>')
     }
