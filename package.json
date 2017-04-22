@@ -5,7 +5,7 @@
   "main": "kernel/aslk.js",
   "dependencies": {
     "chinese_convert": "^1.0.8",
-    "mdo": "^1.0.4",
+    "mdo": "^1.0.5",
     "pinyin.js": "^2.0.0",
     "pinyinlite": "^1.2.0"
   },

@@ -211,6 +211,40 @@ function analyze (text, s2t) {
   return p
 }
 
+function textMt (text, s2t) {
+  var lex = clex(text)
+  var t = mt(lex.s, lex.words, s2t)
+  return t.join(' ').replace('↓', '\n')
+}
+
+function objMt (obj, s2t) {
+  if (typeof obj === 'string') {
+    return textMt(obj, s2t)
+  } else if (typeof obj === 'object') {
+    for (var key in obj) {
+      obj[key] = objMt(obj[key], s2t)
+    }
+    return obj
+  } else return obj
+}
+
+function rubyMt (text, s2t) {
+  var p = analyze (text, s2t)
+  var toTags = [ '<ruby>' ]
+  for (var i = 0; i < p.s.length; i++) {
+    if (p.s[i] === '↓') {
+      toTags.push('</ruby><br/><ruby>')
+    } else {
+      toTags.push(/*'&nbsp;' + */ p.s[i] +
+        '<sub class="cut">' + p.cuts[i] + '</sub>' +
+        '<rp>(</rp><rt>' /*+'&nbsp;'*/ + p.t[i] + '</rt><rp>)</rp>')
+    }
+  }
+  toTags.push('</ruby>')
+  return toTags.join(' ')
+}
+
+
 function report (p, s2t) {
   console.log('%j', p.s)
 //  console.log('詞性：%j', p.tags)
@@ -246,5 +280,7 @@ module.exports = {
   mt: mt,
   report: report,
   analyze: analyze,
-  analysis: analysis
+  analysis: analysis,
+  objMt: objMt,
+  rubyMt: rubyMt
 }

@@ -18,6 +18,12 @@ aslk.analysis('Mary is my friend.', 'e2c')
 aslk.analysis('Today is the oral_defense of the ESP department in X university.', 'e2c')
 aslk.analysis('In the beginning, Magneto comes in and cups of committee members fly to salute.', 'e2c')
 aslk.analysis('寫程式 ( [Node.js](https://nodejs.org/) + [JavaScript](js1.md) 。', 'c2e')
+var mt1 = aslk.objMt({"title":"買水果嗎？", body:"蘋果、香蕉與柳丁", value:100}, 'c2e')
+console.log('mt1=%j', mt1)
+
+var rubyMt1 = aslk.rubyMt("買水果嗎？ 蘋果、香蕉與柳丁？", 'c2e')
+console.log('rubyMt1=%s', rubyMt1)
+
 // aslk.analysis('蘋果 了 了 香蕉 吃 。 ')
 // aslk.analysis('蘋果 和 香蕉 吃 。')
 // aslk.analysis('吃 蘋果 香蕉 。 吃 蘋果 和 香蕉 。')
