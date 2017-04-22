@@ -281,6 +281,7 @@ module.exports = {
   report: report,
   analyze: analyze,
   analysis: analysis,
+  textMt: textMt,
   objMt: objMt,
   rubyMt: rubyMt
 }
