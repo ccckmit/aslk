@@ -74,6 +74,7 @@ var exps = {
   tex: /^(\$\$.*?\$\$)/i,        // markdown tex 數學式不翻譯
   code: /^(↓```.*?↓```\s*↓)/i,   // markdown 程式碼不翻譯
   spaces: /^(\s+)/i,             // 一連串空白
+  digits: /^([\d\.]+)/i,         // 數字串 3.143.252 ...
   cet: /^(((\w*)=)?(([\u4E00-\u9FFF]{1,8}):([a-z])))/i, // (Mary=)?瑪莉:N
   et: /^((\w+)(:([a-z]))?)\W/i,  // Mary:N
   c4: /^([\u4E00-\u9FFF]{4})/,   // 四字詞
@@ -81,7 +82,8 @@ var exps = {
   c2: /^([\u4E00-\u9FFF]{2})/,   // 二字詞
   c1: /^([\u4E00-\u9FFF]{1})/,   // 一字詞
   newline: /^([↓])/, // 換行
-  dots: /^([^\w\u4E00-\u9FFF↓]+)/i // 一連串標點 (非中英文)
+  dots: /^([^\w\u4E00-\u9FFF↓]+)/i, // 一連串標點 (非中英文)
+  any: /^([\s\S])/i,             // 任何字母
 }
 
 var suffixList = [
@@ -142,14 +144,15 @@ function clex (text) {
               word = {cn: m[1], tag: 'N'} // 不認識的中文字，都視為名詞
             }
             break
+          case 'digits' : word = { tag:'N', cn: m[1], en: m[1] }; break
           case 'markup': case 'mdLinkHead': case 'mdLinkTail':
-          case 'spaces': case 'skips': case 'comment':
+          case 'spaces': case 'skips': case 'comment': 
             word = { tag: '' } // 空白類型，忽略。
             break
           case 'tex': case 'code': case 'style': case 'script': case 'url':
             word = { tag: '.' }
             break
-          case 'newline': case 'dots': // 符號串
+          case 'newline': case 'dots': case 'any': // 符號串
             word = {tag: '.'}
             break
         }
