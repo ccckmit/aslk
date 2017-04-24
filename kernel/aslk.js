@@ -217,7 +217,7 @@ function analyze (text, s2t) {
 function textMt (text, s2t) {
   var lex = clex(text)
   var t = mt(lex.s, lex.words, s2t)
-  return t.join(' ').replace(/↓\s(#+)/g, '↓$1').replace(/↓/g, '\n')
+  return t.join(' ').replace(/↓\s?/g, '\n')
 //  return t.join(' ').replace(/↓/g, '\n')
 }
 
