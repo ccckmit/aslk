@@ -25,6 +25,8 @@ var rubyMt1 = aslk.rubyMt("買水果嗎？ 蘋果、香蕉與柳丁？", 'c2e')
 console.log('rubyMt1=%s', rubyMt1)
 
 aslk.analysis('9dddd\n dd', 'c2e')
+console.log('textMt=%s', aslk.textMt('#標題\n##標題1\n###標題1.1', 'c2e'))
+
 
 
 
