@@ -1,6 +1,6 @@
 {
   "name": "aslk",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Artifical Spoken Language - Kernel (人造語核心)",
   "main": "kernel/aslk.js",
   "dependencies": {
